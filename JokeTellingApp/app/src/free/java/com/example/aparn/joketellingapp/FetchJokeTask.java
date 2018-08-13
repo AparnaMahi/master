@@ -66,6 +66,7 @@ public class FetchJokeTask extends AsyncTask<Void, Void, String>
 			return myApiService.telljoke().execute().getData();
 		} catch (IOException e) {
 			Log.e(TAG," IO Exception ");
+			e.printStackTrace();
 			return "Error";
 		}
 	}

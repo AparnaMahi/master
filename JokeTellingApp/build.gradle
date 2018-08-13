@@ -16,8 +16,6 @@ allprojects {
         jcenter()
         google()
     }
-
-
     //Launches the GCE local development server
     task runAppEngine (dependsOn: ":backend:appengineRun") {
         project(":backend").afterEvaluate { backend ->
@@ -27,12 +25,11 @@ allprojects {
             println "started the server!"
         }
     }
-    task configureTestTask {
-        //Runs all tests
+    //Runs all tests
+    //Shuts the server down again
+    task configureTestTask (dependsOn: runAppEngine) {
         dependsOn ':app:connectedAndroidTest'
-        //Shuts the server down again
-        dependsOn ':backend:appengineStop'
-
+        finalizedBy ':backend:appengineStop'
     }
 }
 task clean(type: Delete) {

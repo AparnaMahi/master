@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
 
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
@@ -22,24 +23,24 @@ public class FetchJokeTestCase {
     @Test
     public void testAllJokes() {
 
-        final CountDownLatch signal = new CountDownLatch(1);
+        final CountDownLatch latch = new CountDownLatch(1);
         try {
             context = InstrumentationRegistry.getContext();
             FetchJokeTask testJokeTask = new FetchJokeTask(context) {
                 @Override
                 protected void onPostExecute(String jokes) {
                     //Log.d(TAG, "Joke text: " + jokes);
-                    if(jokes.equals("Error"))
-                        assertTrue(jokes.equals("Error"));
-                    else {
-                        assertNotNull(jokes);
-                        assertTrue(jokes.length() > 0);
+                    if(jokes.isEmpty()||jokes.equals(null)||jokes.equals("Error")){
+                        assertFalse(jokes.isEmpty()||jokes.equals(null)||jokes.equals("Error"));
                     }
-                    signal.countDown();
+                    else {
+                        assertFalse(jokes.isEmpty() || jokes.equals(null) || jokes.equals("Error"));
+                    }
+                    latch.countDown();
                 }
             };
             testJokeTask.execute();
-            signal.await();
+            latch.await();
         } catch (InterruptedException e) {
             Log.e(TAG, Log.getStackTraceString(e));
         }
